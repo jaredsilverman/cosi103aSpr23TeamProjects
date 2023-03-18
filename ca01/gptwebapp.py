@@ -34,9 +34,11 @@ def index():
     print('processing / route')
     return f'''
         <h1>GPT Demo</h1>
-        <a href="{url_for('gptdemo')}">Ask questions to GPT</a><br>
+        <a href="{url_for('about')}">About</a><br>
+        <a href="{url_for('team')}">Meet the team</a><br>
         <a href="{url_for('keyword_info')}">Get info about a Python keyword</a><br>
-        <a href="{url_for('about')}">Meet the team</a>
+        <a href="{url_for('book_info')}">Get info about where to buy a book</a><br>
+        <a href="{url_for('gptdemo')}">Ask questions to GPT</a><br>
     '''
 
 
@@ -71,14 +73,23 @@ def gptdemo():
 @app.route('/about')
 def about():
     ''' Explains what our program does '''
-    return "Hello"
+    return f'''
+    <h1>About</h1>
+    <p>Welcome to our project that provides prompts to ChatGPT!<p>
+    <p>In the Meet the Team page you can see bios for each participant
+    <p>You can get information about codes in "Get info about a Python keyword".<p>
+    <p>You can also get info about where to buy a book<p>
+    <p>Finally, you can also ask general questions in the "Ask questions to GPT" page<p>
+
+    '''
 
 @app.route('/team')
 def team():
     ''' Gives a short bio of each team member and what their role was '''
     return f'''
     <h1>Meet the team</h1>
-    <p>Gabriel</p>
+    <p>Gabriel Abreu is a sophmore from Rio de Janeiro, Brazil studying Applied Mathematics
+    He created  the page that gives you information on where to buy a book, and added text to different sections on the index page</p>
     <p>Jared Silverman is a sophomore from Somerset, MA studying Applied Mathematics.
     He created the page that gives info about Python keywords and formatted the index page.</p>
     '''
@@ -92,7 +103,7 @@ def keyword_info():
         prompt = request.form['prompt']
         answer = gptAPI.get_info(prompt)
         return f'''
-        <h1>GPT Demo</h1>
+        <h1>Python keyword info</h1>
         <pre style="bgcolor:yellow">{prompt}</pre>
         <hr>
         Here is what this keyword does:
@@ -103,6 +114,32 @@ def keyword_info():
         return '''
         <h1>Python keyword info</h1>
         Enter a Python keyword below:
+        <form method="post">
+            <textarea name="prompt"></textarea>
+            <p><input type=submit value="get response">
+        </form>
+        '''
+    
+@app.route('/book_info', methods=['GET','POST'])
+def book_info():
+    ''' Handles a get request by sending a form prompting for a book name
+    and a post request by returning the GPT response explaining where to buy the given book
+    '''
+    if request.method == 'POST':
+        prompt = request.form['prompt']
+        answer = gptAPI.get_book(prompt)
+        return f'''
+        <h1>Book link</h1>
+        <pre style="bgcolor:yellow">{prompt}</pre>
+        <hr>
+        Here is what this keyword does:
+        <div style="border:thin solid black">{answer}</div>
+        <a href={url_for('index')}>make another query</a>
+        '''
+    else:
+        return '''
+        <h1>Book link</h1>
+        Enter a Book name below:
         <form method="post">
             <textarea name="prompt"></textarea>
             <p><input type=submit value="get response">

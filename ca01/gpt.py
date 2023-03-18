@@ -47,7 +47,12 @@ class GPT():
     
     def get_info(self, keyword):
         ''' Generate an explanation of a Python keyword from GPT '''
-        self.getResponse("What does the " + keyword + " keyword do in Python?")
+        return self.getResponse("What does the " + keyword + " keyword do in Python?")
+
+    def get_book(self, keyword):
+        ''' Explain where you can buy a book'''
+        return self.getResponse("Give me a link for where I can buy this book:" + keyword)
+
 
 if __name__=='__main__':
     '''
