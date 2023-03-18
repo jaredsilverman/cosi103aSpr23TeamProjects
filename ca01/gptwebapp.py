@@ -34,7 +34,9 @@ def index():
     print('processing / route')
     return f'''
         <h1>GPT Demo</h1>
-        <a href="{url_for('gptdemo')}">Ask questions to GPT</a>
+        <a href="{url_for('gptdemo')}">Ask questions to GPT</a><br>
+        <a href="{url_for('keyword_info')}">Get info about a Python keyword</a><br>
+        <a href="{url_for('about')}">Meet the team</a>
     '''
 
 
@@ -69,10 +71,43 @@ def gptdemo():
 @app.route('/about')
 def about():
     ''' Explains what our program does '''
+    return "Hello"
 
 @app.route('/team')
 def team():
     ''' Gives a short bio of each team member and what their role was '''
+    return f'''
+    <h1>Meet the team</h1>
+    <p>Gabriel</p>
+    <p>Jared Silverman is a sophomore from Somerset, MA studying Applied Mathematics.
+    He created the page that gives info about Python keywords and formatted the index page.</p>
+    '''
+
+@app.route('/keyword_info', methods=['GET','POST'])
+def keyword_info():
+    ''' Handles a get request by sending a form prompting for a Python keyword
+    and a post request by returning the GPT response explaining the keyword
+    '''
+    if request.method == 'POST':
+        prompt = request.form['prompt']
+        answer = gptAPI.get_info(prompt)
+        return f'''
+        <h1>GPT Demo</h1>
+        <pre style="bgcolor:yellow">{prompt}</pre>
+        <hr>
+        Here is what this keyword does:
+        <div style="border:thin solid black">{answer}</div>
+        <a href={url_for('index')}>make another query</a>
+        '''
+    else:
+        return '''
+        <h1>Python keyword info</h1>
+        Enter a Python keyword below:
+        <form method="post">
+            <textarea name="prompt"></textarea>
+            <p><input type=submit value="get response">
+        </form>
+        '''
 
 if __name__=='__main__':
     # run the code on port 5001, MacOS uses port 5000 for its own service :(
