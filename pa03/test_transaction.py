@@ -1,1 +1,38 @@
 from transaction import Transaction
+import pytest
+
+@pytest.fixture
+def database():
+    database = Transaction("/tracker.db")
+    yield database
+
+
+def test_add_transaction(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    assert database.show_transactions() == [(10.0, 'Food', '2023-03-26', 'sandwich')]
+
+def test_delete_transaction(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    database.delete_transaction(1)
+    assert database.show_transactions() == []
+
+def test_summarize_by_date(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
+    assert database.summarize_by_date() == [('2022-03-26', 2, 50.0)]
+
+def test_summarize_by_month(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
+    assert database.summarize_by_month() == [('03', 2, 50.0)]
+
+def test_summarize_by_year(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
+    assert database.summarize_by_year() == [('2022', 2, 50.0)]
+
+def test_summarize_by_category(database):
+    database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
+    database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
+    assert database.summarize_by_category() == [('Food', 10.0), ('Utilities', 40.0)]
+
