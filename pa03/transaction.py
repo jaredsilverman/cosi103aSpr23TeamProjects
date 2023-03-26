@@ -1,4 +1,4 @@
-''' docstring '''
+''' Module for the Transactions, which stores the financial information  '''
 
 import sqlite3
 import os
@@ -16,9 +16,10 @@ def summarize_dict(tup, group):
     return grouped
 
 class Transaction():
-    ''' docstring '''
+    ''' A class that stores financial transactions in a SQL database '''
     
     def __init__(self, data):
+        '''Initializes the database'''
         self.data = data
         self.run_query("""CREATE TABLE IF NOT EXISTS transactions
                      (amount real, category text, date date, description text);""",())
@@ -67,10 +68,7 @@ class Transaction():
 
     def run_query(self, query, tup):
         ''' return all of the uncompleted tasks as a list of dicts.'''
-        if os.getenv('HOME') != None:
-            con = sqlite3.connect(os.getenv('HOME') + self.data)
-        else:
-            con = sqlite3.connect(os.getenv('HOMEPATH') + self.data)
+        con = sqlite3.connect(os.getenv('HOME') + self.data)
         cur = con.cursor()
         cur.execute(query,tup)
         result = cur.fetchall()

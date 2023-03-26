@@ -1,4 +1,4 @@
-''' module docstring '''
+'''  Module for the finance tracker, which interacts with Transactions to modify the database '''
 
 import sys
 from transaction import Transaction
