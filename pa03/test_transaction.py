@@ -6,11 +6,14 @@ def database():
     database = Transaction("/tracker.db")
     yield database
 
-def test_add_transaction(database):
-    database.add(10.0, 'Food', '2023-03-26', 'sandwich')
-    assert database.show() == [{'item':1, 'amount':10.0, 'category':"Food",'date':'2023-03-26', 'description':'sandwich'}]
+def test_show(database):
+    assert database.show() == []
 
-def test_delete_transaction(database):
+def test_add(database):
+    database.add(10.0, 'Food', '2023-03-26', 'sandwich')
+    assert database.show() == [{'item':1, 'amount':10.0, 'category':"Food", 'date':'2023-03-26', 'description':'sandwich'}]
+
+def test_delete(database):
     database.add(10.0, 'Food', '2023-03-26', 'sandwich')
     database.delete(1)
     assert database.show() == []

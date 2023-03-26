@@ -17,7 +17,7 @@ def summarize_dict(tup, group):
 
 class Transaction():
     ''' A class that stores financial transactions in a SQL database '''
-    
+
     def __init__(self, data):
         '''Initializes the database'''
         self.data = data
