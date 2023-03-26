@@ -9,7 +9,7 @@ def database():
 
 def test_add_transaction(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
-    assert database.show_transactions() == [(10.0, 'Food', '2023-03-26', 'sandwich')]
+    assert database.show_transactions() == [{'item':1, 'amount':10.0, 'category':"Food",'date':'2023-03-26', 'description':'sandwich'}]
 
 def test_delete_transaction(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
@@ -19,20 +19,21 @@ def test_delete_transaction(database):
 def test_summarize_by_date(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
     database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
-    assert database.summarize_by_date() == [('2022-03-26', 2, 50.0)]
+    assert database.summarize_by_date() == [{"date":"2023-03-26", 'transactions':1, 'total':"50"}]
 
 def test_summarize_by_month(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
     database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
-    assert database.summarize_by_month() == [('03', 2, 50.0)]
+    assert database.summarize_by_month() ==  [{"date":"03", 'transactions':2, 'total':"50"}]
 
 def test_summarize_by_year(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
     database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
-    assert database.summarize_by_year() == [('2022', 2, 50.0)]
+    assert database.summarize_by_year() ==  [{"date":"2023", 'transactions':2, 'total':"50"}]
 
 def test_summarize_by_category(database):
     database.add_transaction(10.0, 'Food', '2023-03-26', 'sandwich')
     database.add_transaction(40.0, 'Utilities', '2023-03-26', 'plumbing')
-    assert database.summarize_by_category() == [('Food', 10.0), ('Utilities', 40.0)]
+    assert database.summarize_by_category() == [{"category":"Food", 'transactions':1, 'total':"10"}, 
+                                                {"category":"Utilities", 'transactions':1, 'total':"40"}]
 
