@@ -3,6 +3,7 @@ This app allows the user to keep track of their finances through a database in S
 Scripts
 
 Pylint:
+
 PS C:\Users\gmbab\cosi103aSpr23TeamProjects\pa03> pylint tracker.py
 
 --------------------------------------------------------------------
@@ -14,6 +15,7 @@ PS C:\Users\gmbab\cosi103aSpr23TeamProjects\pa03> pylint transaction.py
 Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 
 Pytest:
+
 PS C:\Users\gmbab\cosi103aSpr23TeamProjects\pa03> pytest test_transaction.py
 ======================================================================= test session starts ========================================================================
 platform win32 -- Python 3.9.12, pytest-7.1.1, pluggy-1.0.0
@@ -27,6 +29,7 @@ test_transaction.py .......                                                     
 
 
 Tracker.py:
+
 PS C:\Users\gmbab\cosi103aSpr23TeamProjects\pa03> python tracker.py 
 usage:
             q: quit
