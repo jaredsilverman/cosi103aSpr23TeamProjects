@@ -16,6 +16,8 @@ def summarize_dict(tup, group):
     return grouped
 
 class Transaction():
+    ''' docstring '''
+    
     def __init__(self, data):
         self.data = data
         self.run_query("""CREATE TABLE IF NOT EXISTS transactions
@@ -45,14 +47,14 @@ class Transaction():
 
     def summarize_by_month(self):
         '''summarize the transactions based on the months'''
-        result = self.run_query("""SELECT DATENAME(month, date) AS month,
+        result = self.run_query("""SELECT strftime('%m', date) AS month,
                               COUNT(amount) AS transactions, SUM(amount) AS total
                               FROM transactions GROUP BY month;""", ())
         return [summarize_dict(t, "month") for t in result]
 
     def summarize_by_year(self):
         '''summarize the transactions based on the year'''
-        result = self.run_query("""SELECT DATENAME(year, date) AS year,
+        result = self.run_query("""SELECT strftime('%Y', date) AS year,
                               COUNT(amount) AS transactions, SUM(amount) AS total
                               FROM transactions GROUP BY year;""", ())
         return [summarize_dict(t, "year") for t in result]

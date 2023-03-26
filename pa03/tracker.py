@@ -8,8 +8,8 @@ def print_usage():
     print('''usage:
             q: quit
             show: show all transactions
-            add amount category date description: add new transaction
-            delete rowid: delete transaction
+            add (amount) (category) (date) (description): add new transaction
+            delete (rowid): delete transaction
             by_date: summarize transactions by date
             by_month: summarize transactions by month
             by_year: summarize transactions by year
