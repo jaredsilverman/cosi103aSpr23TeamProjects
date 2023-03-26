@@ -68,7 +68,7 @@ class Transaction():
 
     def run_query(self, query, tup):
         ''' return all of the uncompleted tasks as a list of dicts.'''
-        if os.getenv('HOME') != None:
+        if os.getenv('HOME') is not None:
             con = sqlite3.connect(os.getenv('HOME') + self.data)
         else:
             con = sqlite3.connect(os.getenv('HOMEPATH') + self.data)
