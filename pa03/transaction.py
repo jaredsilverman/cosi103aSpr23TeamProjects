@@ -5,7 +5,6 @@ import os
 
 def to_dict(tup):
     ''' tup is a tuple (item #, amount, category, date, description)'''
-    print(tup)
     transaction = {'item':tup[0], 'amount':tup[1], 'category':tup[2],
                    'date':tup[3], 'description':tup[4]}
     return transaction
