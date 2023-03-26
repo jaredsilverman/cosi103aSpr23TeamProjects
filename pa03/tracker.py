@@ -40,16 +40,14 @@ def process_args(arglist):
     if arglist == [] or arglist[0] == "11" or (arglist[0] == "5" and len(arglist) != 5):
         print_usage()
     elif arglist[0] == "4":
-        print_transactions(transactions.show_transactions())
+        print_transactions(transactions.show())
     elif arglist[0] == "5":
-        transact = {'amount':arglist[1], 'category':arglist[2],
-                    'date':arglist[3], 'description':arglist[4]}
-        transactions.add_transaction(transact)
+        transactions.add(arglist[1], arglist[2], arglist[3], arglist[4])
     elif arglist[0] == "6":
         if len(arglist) != 2:
             print_usage()
         else:
-            transactions.delete_transaction(arglist[1])
+            transactions.delete(arglist[1])
     elif arglist[0] == "7":
         print_transactions(transactions.summarize_by_date())
     elif arglist[0] == "8":

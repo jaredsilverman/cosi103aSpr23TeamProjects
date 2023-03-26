@@ -1,55 +1,74 @@
+''' docstring '''
+
 import sqlite3
 import os
 
-def to_dict(t):
-    ''' t is a tuple (item #, amount, category, date, description)'''
-    print('t='+str(t))
-    todo = {'item':t[0], 'amount':t[1], 'category':t[2], 'date':t[3], 'description':t[4]}
-    return todo
+def to_dict(tup):
+    ''' tup is a tuple (item #, amount, category, date, description)'''
+    transaction = {'item':tup[0], 'amount':tup[1], 'category':tup[2],
+                   'date':tup[3], 'description':tup[4]}
+    return transaction
+
+def summarize_dict(tup, group):
+    ''' tup is a tuple (group, transactions, total)'''
+    grouped = {group:tup[0], 'transactions':tup[1], 'total':tup[2]}
+    return grouped
 
 class Transaction():
-    '''<docstring>'''
-
     def __init__(self, data):
         self.data = data
-        self.run_query('''CREATE TABLE IF NOT EXISTS transactions
-                     (amount real, category text, date text, description text)''',())
-    
+        self.run_query("""CREATE TABLE IF NOT EXISTS transactions
+                     (amount real, category text, date text, description text);""",())
+
     def show(self):
         '''shows all transactions'''
-        return self.run_query("SELECT * FROM transactions")
-    
+        result = self.run_query("SELECT * FROM transactions;", ())
+        return [to_dict(t) for t in result]
+
     def add(self, amount, category, date, description):
         '''adds transaction into the database'''
-        self.run_query("INSERT INTO transactions (amount, category, date, description) VALUES (?, ?, ?, ?)",(amount, category, date, description))
+        result = self.run_query("""INSERT INTO transactions (amount, category, date, description)
+                       VALUES (?, ?, ?, ?);""",
+                       (amount, category, date, description))
+        return [to_dict(t) for t in result]
 
     def delete(self, item):
         '''deletes a transaction from the database'''
-        self.run_query("DELETE FROM transactions WHERE item=?", (item,))
+        result = self.run_query("DELETE FROM transactions WHERE item=?;", (item,))
+        return [to_dict(t) for t in result]
 
     def summarize_by_date(self):
         '''summarize the transactions based on the dates'''
-        return self.run_query("SELECT date, SUM(amount), COUNT(amount) FROM transactions GROUP BY date")
-    
+        result = self.run_query("""SELECT date, COUNT(amount) AS transactions,
+                              SUM(amount) AS total FROM transactions GROUP BY date;""", ())
+        return [summarize_dict(t, "date") for t in result]
+
     def summarize_by_month(self):
         '''summarize the transactions based on the months'''
-        return self.run_query("SELECT DATENAME(month,date), SUM(amount), COUNT(amount) FROM transactions GROUP BY DATENAME(month,Date)")
-    
+        result = self.run_query("""SELECT DATENAME(month, date) AS month,
+                              COUNT(amount) AS transactions, SUM(amount) AS total
+                              FROM transactions GROUP BY month;""", ())
+        return [summarize_dict(t, "month") for t in result]
+
     def summarize_by_year(self):
         '''summarize the transactions based on the year'''
-        return self.run_query("SELECT DATENAME(year ,date), SUM(amount), COUNT(amount) FROM transactions GROUP BY DATENAME(year,Date)")
-    
+        result = self.run_query("""SELECT DATENAME(year, date) AS year,
+                              COUNT(amount) AS transactions, SUM(amount) AS total
+                              FROM transactions GROUP BY year;""", ())
+        return [summarize_dict(t, "year") for t in result]
+
     def summarize_by_category(self):
         '''summarize the transactions based on the category'''
-        return self.run_query("SELECT category, SUM(amount), COUNT(amount) FROM transactions GROUP BY category")
-    
+        result = self.run_query("""SELECT category, COUNT(amount) AS transactions,
+                              SUM(amount) AS total FROM transactions GROUP BY category;""", ())
+        return [summarize_dict(t, "category") for t in result]
 
-    def run_query(self, query, tuple):
+    def run_query(self, query, tup):
         ''' return all of the uncompleted tasks as a list of dicts.'''
         con = sqlite3.connect(os.getenv('HOME') + self.data)
-        cur = con.cursor() 
-        cur.execute(query,tuple)
+        cur = con.cursor()
+        cur.execute(query,tup)
         result = cur.fetchall()
         con.commit()
         con.close()
-        return [to_dict(t) for t in result]
+        return result
