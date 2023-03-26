@@ -5,6 +5,7 @@ import os
 
 def to_dict(tup):
     ''' tup is a tuple (item #, amount, category, date, description)'''
+    print(tup)
     transaction = {'item':tup[0], 'amount':tup[1], 'category':tup[2],
                    'date':tup[3], 'description':tup[4]}
     return transaction
@@ -18,23 +19,22 @@ class Transaction():
     def __init__(self, data):
         self.data = data
         self.run_query("""CREATE TABLE IF NOT EXISTS transactions
-                     (amount real, category text, date text, description text);""",())
+                     (amount real, category text, date date, description text);""",())
 
     def show(self):
         '''shows all transactions'''
-        result = self.run_query("SELECT * FROM transactions;", ())
+        result = self.run_query("SELECT rowid, * FROM transactions;", ())
         return [to_dict(t) for t in result]
 
     def add(self, amount, category, date, description):
         '''adds transaction into the database'''
-        result = self.run_query("""INSERT INTO transactions (amount, category, date, description)
+        self.run_query("""INSERT INTO transactions (amount, category, date, description)
                        VALUES (?, ?, ?, ?);""",
                        (amount, category, date, description))
-        return [to_dict(t) for t in result]
 
     def delete(self, item):
         '''deletes a transaction from the database'''
-        result = self.run_query("DELETE FROM transactions WHERE item=?;", (item,))
+        result = self.run_query("DELETE FROM transactions WHERE rowid=?;", (item,))
         return [to_dict(t) for t in result]
 
     def summarize_by_date(self):

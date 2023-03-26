@@ -6,18 +6,15 @@ from transaction import Transaction
 def print_usage():
     ''' print an explanation of how to use this command '''
     print('''usage:
-            0. quit
-            1. show categories
-            2. add category
-            3. modify category
-            4. show transactions
-            5. add transaction
-            6. delete transaction
-            7. summarize transactions by date
-            8. summarize transactions by month
-            9. summarize transactions by year
-            10. summarize transactions by category
-            11. print this menu
+            q: quit
+            show: show all transactions
+            add amount category date description: add new transaction
+            delete rowid: delete transaction
+            by_date: summarize transactions by date
+            by_month: summarize transactions by month
+            by_year: summarize transactions by year
+            by_cat: summarize transactions by category
+            help: show this menu
             '''
             )
 
@@ -27,37 +24,50 @@ def print_transactions(transactions):
         print('No transactions')
     else:
         print('\n')
-        print("%-10s %-10s %-30s %-10s %-30s"
+        print("%-10s %-10s %-20s %-10s %-30s"
               %('item #', 'amount', 'category', 'date', 'description'))
-        print('-'*40)
+        print('-'*80)
         for item in transactions:
+            values = tuple(item.values())
+            print("%-10s %-10.2f %-20s %-10s %-30s"%values)
+
+def print_summary(groups, name):
+    ''' print the output for a summarize function '''
+    if len(groups) == 0:
+        print('No transactions')
+    else:
+        print('\n')
+        print("%-10s %-12s %-10s"
+              %(name, 'transactions', 'total'))
+        print('-'*80)
+        for item in groups:
             values = tuple(item.values()) #(rowid,title,desc,completed)
-            print("%-10s %-10s %-30s %2d"%values)
+            print("%-10s %-12d %-10.2f"%values)
 
 def process_args(arglist):
     ''' examine args and make appropriate calls to Transaction'''
-    transactions = Transaction('tracker.db')
-    if arglist == [] or arglist[0] == "11" or (arglist[0] == "5" and len(arglist) != 5):
+    transactions = Transaction('/tracker.db')
+    if arglist == [] or arglist[0] == "help" or (arglist[0] == "add" and len(arglist) != 5):
         print_usage()
-    elif arglist[0] == "4":
+    elif arglist[0] == "show":
         print_transactions(transactions.show())
-    elif arglist[0] == "5":
+    elif arglist[0] == "add":
         transactions.add(arglist[1], arglist[2], arglist[3], arglist[4])
-    elif arglist[0] == "6":
+    elif arglist[0] == "delete":
         if len(arglist) != 2:
             print_usage()
         else:
             transactions.delete(arglist[1])
-    elif arglist[0] == "7":
-        print_transactions(transactions.summarize_by_date())
-    elif arglist[0] == "8":
-        print_transactions(transactions.summarize_by_month())
-    elif arglist[0] == "9":
-        print_transactions(transactions.summarize_by_year())
-    elif arglist[0] == "10":
-        print_transactions(transactions.summarize_by_category())
+    elif arglist[0] == "by_date":
+        print_summary(transactions.summarize_by_date(), "date")
+    elif arglist[0] == "by_month":
+        print_summary(transactions.summarize_by_month(), "month")
+    elif arglist[0] == "by_year":
+        print_summary(transactions.summarize_by_year(), "year")
+    elif arglist[0] == "by_cat":
+        print_summary(transactions.summarize_by_category(), "category")
     else:
-        print(arglist,"is not implemented")
+        print(arglist, "is not implemented")
         print_usage()
 
 def toplevel():
@@ -66,18 +76,17 @@ def toplevel():
         # No arguments were passed
         print_usage()
         args = []
-        while args != ['']:
+        while args != ['q']:
             args = input("command> ").split(' ')
-            if args[0] == "5":
-                # join everyting after the name as a string
-                args = ['add',args[1]," ".join(args[2:])]
-            if args[0] != 0:
-                process_args(args)
-            print('-'*40+'\n'*3)
+            if args[0] == "add":
+                # join the description as a string
+                args = [args[0], args[1], args[2], args[3], "".join(args[4:])]
+            process_args(args)
+            print('-'*80+'\n'*3)
     else:
         # read the args and process them
         args = sys.argv[1:]
         process_args(args)
-        print('-'*40+'\n'*3)
+        print('-'*80+'\n'*3)
 
 toplevel()
