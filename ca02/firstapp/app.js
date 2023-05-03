@@ -10,6 +10,9 @@ const weatherRouter = require('./routes/weather');
 
 const User = require('./models/User');
 
+const keywordRouter = require('./routes/keyword_info')
+const movieRouter = require('./routes/movie_info')
+
 /* **************************************** */
 /*  Connecting to a Mongo Database Server   */
 /* **************************************** */
@@ -88,9 +91,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-
 app.use(pw_auth_router)
 
 app.use(layouts);
@@ -115,6 +115,8 @@ app.get('/team',
 
 app.use(toDoRouter);
 app.use(weatherRouter);
+app.use(movieRouter);
+app.use(keywordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
