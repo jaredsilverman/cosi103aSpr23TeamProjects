@@ -258,3 +258,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# startup.sh
+.startup.sh
+.package-lock.json
+
